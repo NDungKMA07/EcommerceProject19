@@ -1,0 +1,128 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+}
+@* Để phân trang thì using các đối tượng sau *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@* Có thể định nghĩa các hàm, viết code trong file .cshtml *@
+@using Project_aspnet_19_DevPro.Models
+@functions {
+    public MyDbConnect db = new MyDbConnect();
+    public List<ItemCategory> CategoriesSub(int _CategoryId)
+    {
+        List<ItemCategory> list_record = db.Categories.Where(item => item.ParentId == _CategoryId).ToList();
+        return list_record;
+    }
+}
+        <div class="container">
+            <div class="col mb-3">
+                <div class="e-panel card">
+                    <div class="card-body">
+                        <div class="card-title d-flex align-items-center">
+                            <h4 class="mr-2 col-6">Categories</h4>
+                            <div class="text-center col-6">
+                                <a href="/Admin/Categories/Create" class="btn btn-success btn-block w-100">New
+                                    Category</a>
+                            </div>
+                        </div>
+
+
+                        <div class="e-table">
+                            <div class="table-responsive table-lg mt-3">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center ">STT</th>
+                                            <th class="text-center ">Photo</th>
+
+                                            <th class="max-width text-center">Name Category</th>
+                                            <th class="text-center ">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                    int count = 1;
+                                }
+                                @foreach (var item in Model)
+                                {
+                                            <tr>
+                                                <td class="text-nowrap align-middle text-center">@count</td>
+                                                <td class="align-middle text-center">
+                                                    <div class="bg-light d-inline-flex justify-content-center align-items-center align-top"
+                                                    style="width: 35px; height: 35px; border-radius: 3px;"><i
+                                                        class="fa fa-fw fa-photo" style="opacity: 0.8;"></i></div>
+                                                </td>
+
+                                                <td class="text-nowrap align-middle"><span>@item.Name</span></td>
+
+                                                <td class="text-center align-middle">
+                                                    <div class="btn-group align-top">
+                                                        <a href="/Admin/Categories/Update/@item.Id"
+                                                        class="btn btn-sm btn-outline-secondary badge text-dark"
+                                                       ><i
+                                                            class="align-middle me-2" data-feather="edit-3"></i></a>
+                                                        <a href="/Admin/Categories/Delete/@item.Id"
+                                                        onclick="return window.confirm('Are you sure?');"
+                                                        class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                            class="fa fa-trash"></i></a>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                    count += 1;
+                                    List<ItemCategory> list_categories_sub = CategoriesSub(item.Id);
+                                    foreach (ItemCategory itemSub in list_categories_sub)
+                                    {
+
+                                                    <tr>
+                                                        <td class="align-middle text-center"><i class="align-middle me-2"
+                                                        data-feather="corner-down-right"></i></td>
+                                                        <td class="align-middle text-center">
+                                                            <div class="bg-light d-inline-flex justify-content-center align-items-center align-top"
+                                                        style="width: 35px; height: 35px; border-radius: 3px;"><i
+                                                            class="fa fa-fw fa-photo" style="opacity: 0.8;"></i></div>
+                                                        </td>
+
+                                                        <td class="text-nowrap align-middle"><span>@itemSub.Name</span></td>
+                                                        <td class=" text-center align-middle">
+                                                            <div class="btn-group align-top">
+                                                                <a href="/Admin/Categories/Update/@itemSub.Id"
+                                                            class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                                class="align-middle me-2" data-feather="edit-3"></i></a>
+                                                                <a href="/Admin/Categories/Delete/@itemSub.Id"
+                                                            onclick="return window.confirm('Are you sure?');"
+                                                            class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                                class="fa fa-trash"></i></a>
+
+                                                            </div>
+                                                        </td>
+
+
+                                                    </tr>
+
+
+
+                                    }
+
+                                }
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-center">
+
+                        @Html.PagedListPager((IPagedList)Model,p=>Url.Action("Index", new {page = p}))
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+

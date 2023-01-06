@@ -1,0 +1,63 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+}
+<h1 class="h3 mb-3"><strong>
+        @if (Model != null)
+        {
+                   <span> Cập nhập tài khoản: @Model.Name</span>
+        }
+        else
+        {
+                <span> Tạo tài khoản</span>
+        }
+    </strong></h1>
+
+<div class="container">
+    <div class="row ">
+        <div class="col-12 d-table">
+            <div class="d-table-cell align-middle">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="m-sm-4">
+                            <form class="form" method="post" action="@ViewBag.action">
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" value="@if(Model!=null){
+                                    <text>@Model.Name</text>
+}" name="name" placeholder="Name ..." class="form-control form-control-lg" required>
+
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input placeholder="user@example.com" type="email" value="@if(Model != null){
+                                    <text>@Model.Email</text>
+}" name="email" @if(Model !=null){
+                                    <text>disabled</text>
+                                    } class="form-control form-control-lg" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" name="password" @if(Model !=null){
+                                    <text>placeholder="Không
+                                    đổi password thì không nhập thông tin vào ô textbox này"</text>
+                                    }else{
+                                    <text>required</text>
+                                    } class="form-control form-control-lg" >
+
+                                </div>
+
+                                <div class="text-center mt-3">
+
+                                    <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
