@@ -1,0 +1,106 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+}
+@using Project_aspnet_19_DevPro.Models
+@functions {
+    public MyDbConnect db = new MyDbConnect();
+    public List<ItemCategoryNews> ListCategoriesNews()
+    {
+        List<ItemCategoryNews> list_categorie_news = db.CategoryNewsRecord.OrderByDescending(item => item.Id).ToList();
+        return list_categorie_news;
+    }
+    public bool CheckBlogs( int _productId)
+    {
+        ItemCategoryNews record_category = db.CategoryNewsRecord.Where(item =>  item.ParentId == _productId).FirstOrDefault();
+        if (record_category != null)
+        {
+            return true;
+        }
+        return false;
+    }
+}
+
+        <div class="container">
+            <div class="row ">
+                <div class="col-12 d-table">
+                    <div class="d-table-cell align-middle">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="m-sm-4">
+                                    <form class="form" method="post" action="@ViewBag.action"
+                                        enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label class="form-label">Photo</label>
+                                            <input type="file" name="photo" class="form-control form-control-lg">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Name</label>
+                                            <input type="text" value="@if(Model!=null){
+                                    <text>@Model.Name</text>
+}" name="name" placeholder="Name ..." class="form-control form-control-lg" required>
+
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label select-label">Danh mục</label>
+                                            <select class="form-select form-select-lg" name="selectCategoryNews">
+                                                @{
+                                            List<ItemCategoryNews> list_categories_news = ListCategoriesNews();
+                                        }
+
+                                        @foreach (var item_tag in list_categories_news)
+                                        {
+                                                        <option value="@item_tag.ParentId" @if(Model != null && CheckBlogs(Model.CategoryNewId)){
+                            <text>selected</text>
+}>@item_tag.Name</option>
+                                                       
+                                        }
+                                            </select>
+
+
+
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="hot">Hot</label>
+                                            <input type="checkbox" name="hot" id="hot" @if(Model !=null &&
+                                                Model.Hot==1){
+                                    <text>checked</text>
+                                            }>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea name="description" id="description">@if (Model != null)
+                                        {
+                                            <text>@Model.Description</text>
+                                        }</textarea>
+                                            <script language="javascript">
+                                                CKEDITOR.replace("description");
+                                            </script>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Content</label>
+                                            <textarea name="content" id="content">@if (Model != null)
+                                        {
+                                            <text>@Model.Content</text>
+                                        }</textarea>
+                                            <script language="javascript">
+                                                CKEDITOR.replace("content");
+                                            </script>
+
+                                        </div>
+
+                                        <div class="text-center mt-3">
+
+                                            <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>

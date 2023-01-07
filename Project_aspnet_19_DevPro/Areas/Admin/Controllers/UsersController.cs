@@ -44,8 +44,6 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
 			ItemUser UserItem = JsonConvert.DeserializeObject<ItemUser>(StrUserRecord);
 			return View("InfoUser", UserItem);
 
-			
-
 		}
 		public IActionResult UpdateProfile()
 		{

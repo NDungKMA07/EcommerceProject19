@@ -1,0 +1,51 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+}
+@*
+    - Nếu Model là kiểu List thì tác động lên cột sẽ có dạng: Model.tencot
+    - Nếu Model là kiểu DataRow thì tác động lên cột sẽ có dạng: Model["tencot"]
+*@
+@using Project_aspnet_19_DevPro.Models
+
+<h1 class="h3 mb-3"><strong>
+        @if (Model != null)
+        {
+            <span> Cập nhập danh mục: @Model.Name</span>
+        }
+        else
+        {
+            <span> Tạo danh mục bài viết</span>
+        }
+    </strong></h1>
+<div class="container">
+    <div class="row ">
+        <div class="col-12 d-table">
+            <div class="d-table-cell align-middle">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="m-sm-4">
+                            <form class="form" method="post" action="@ViewBag.action">
+                                <div class="mb-3">
+                                    <label class="form-label">Name Blog</label>
+                                    <input type="text" value="@if(Model!=null){
+                                    <text>@Model.Name</text>
+}"
+                                    name="name" class="form-control form-control-lg" required>
+
+                                </div>
+
+                                <div class="text-center mt-3">
+
+                                    <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+}
+@using Project_aspnet_19_DevPro.Models
+@* Để phân trang thì using các đối tượng sau *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+<div class="container">
+    <div class="col mb-3">
+        <div class="e-panel card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-center">
+                    <h4 class="mr-2 col-6">Danh sách sản phẩm</h4>
+                    <div class="text-center col-6">
+                        <a href="/Admin/Products/Create" class="btn btn-success btn-block w-100">
+                            New product</a>
+                    </div>
+                </div>
+
+
+                <div class="e-table">
+                    <div class="table-responsive table-lg mt-3">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+
+                                    <th>Photo</th>
+                                    <th class="max-width">Name</th>
+                                    <th>Category</th>
+                                    <th>Hot</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td class="align-middle text-center">
+                                            @if (item.Photo != null && File.Exists(Directory.GetCurrentDirectory() +
+                                           "\\wwwroot\\Upload\\Products\\" + item.Photo))
+                                            {
+                                                <img src="~/Upload/Products/@item.Photo" style="width:100px;">
+                                            }
+
+
+                                        </td>
+                                        <td class="text-nowrap align-middle">@item.Name</td>
+                                        <td class="text-nowrap align-middle"><span></span></td>
+                                 
+                                        <td class="text-nowrap align-middle"><span>@item.Hot</span></td>
+                                        <td class="text-nowrap align-middle"><span>@item.Price</span></td>
+                                        <td class="text-nowrap align-middle"><span>@item.Discount</span></td>
+                                        <td class="text-center align-middle">
+                                            <div class="btn-group align-top">
+                                                    <a href="/Admin/Products/Update/@item.Id"
+                                                class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                    class="align-middle me-2" data-feather="edit-3"></i></a>
+                                                    <a href="/Admin/Products/Delete/@item.Id"
+                                                onclick="return window.confirm('Are you sure?');"
+                                                class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                    class="fa fa-trash"></i></a>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center">
+
+                        @Html.PagedListPager((IPagedList)Model,p=>Url.Action("Index", new {page = p}))
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

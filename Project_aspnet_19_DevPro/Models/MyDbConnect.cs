@@ -24,5 +24,10 @@ namespace Project_aspnet_19_DevPro.Models
         }
         public DbSet<ItemUser> Users { get; set; } //<=> table Users trong csdl
         public DbSet<ItemCategory> Categories { get; set; } //<=> table Categories trong csdl
+        public DbSet<ItemAdv> Advs { get; set; }
+        public DbSet<ItemProduct> Products { get; set; }
+        public DbSet<ItemSlider> Sliders { get; set; }
+        public DbSet<ItemNews> News { get; set; }
+        public DbSet<ItemCategoryNews> CategoryNewsRecord { get; set; }
     }
 }
