@@ -29,5 +29,10 @@ namespace Project_aspnet_19_DevPro.Models
         public DbSet<ItemSlider> Sliders { get; set; }
         public DbSet<ItemNews> News { get; set; }
         public DbSet<ItemCategoryNews> CategoryNewsRecord { get; set; }
+        public DbSet<ItemCategoriesProducts> CategoriesProducts { get; set; }
+        public DbSet<ItemImgProducts> ImgProducts { get; set; }
+
+        public DbSet<ItemTagProducts> TagProducts { get; set; }
+        public DbSet<ItemTags> Tags { get; set; }
     }
 }

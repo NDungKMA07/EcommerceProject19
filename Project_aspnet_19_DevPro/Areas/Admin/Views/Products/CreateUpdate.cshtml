@@ -10,105 +10,166 @@
         List<ItemCategory> list_categories = db.Categories.OrderByDescending(item => item.Id).ToList();
         return list_categories;
     }
+    public bool checkCategoriesProductsRecord(int _categoryId, int _productId)
+    {
+        ItemCategoriesProducts record_category = db.CategoriesProducts.Where(item => item.CategoryId == _categoryId &&
+        item.ProductId == _productId).FirstOrDefault();
+        if (record_category != null)
+        {
+            return true;
+        }
+        return false;
+    }
+    public List<ItemTags> ListTags()
+    {
+        List<ItemTags> list_tags = db.Tags.OrderByDescending(item => item.Id).ToList();
+        return list_tags;
+    }
+    public bool checkTagsProductsRecord(int _TagId, int _productId)
+    {
+        ItemTagProducts record_category = db.TagProducts.Where(item => item.TagId == _TagId &&
+        item.TagProduct == _productId).FirstOrDefault();
+        if (record_category != null)
+        {
+            return true;
+        }
+        return false;
+    }
 }
 
-        <div class="container">
-            <div class="row ">
-                <div class="col-12 d-table">
-                    <div class="d-table-cell align-middle">
+                <div class="container">
+                    <div class="row ">
+                        <div class="col-12 d-table">
+                            <div class="d-table-cell align-middle">
 
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="m-sm-4">
-                                    <form class="form" method="post" action="@ViewBag.action"
-                                        enctype="multipart/form-data">
-                                         <div class="mb-3">
-                                            <label class="form-label">Photo</label>
-                                            <input type="file" name="photo" class="form-control form-control-lg">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Name</label>
-                                            <input type="text" value="@if(Model!=null){
-                                    <text>@Model.Name</text>
-}" name="name" placeholder="Name ..." class="form-control form-control-lg" required>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="m-sm-4">
+                                            <form class="form" method="post" action="@ViewBag.action"
+                                                enctype="multipart/form-data">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Photo</label>
+                                                    <input type="file" name="photo"
+                                                        class="form-control form-control-lg">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Name</label>
+                                                    <input type="text" value="@if(Model!=null){
+                                        <text>@Model.Name</text>
+    }" name="name" placeholder="Name ..." class="form-control form-control-lg" required>
 
-                                        </div>
-                                        <div class="mb-3">
-                                            <table class="table">
-                                                @{
+                                                </div>
+
+                                                <div class="mb-3 ">
+                                                    <label class="form-label">Categories</label>
+                                                    <ul>
+                                                        <li> Select All <input type="checkbox" class="check"
+                                                                id="checkCategories"></li>
+                                                        @{
                                             List<ItemCategory> list_categories = ListCategories();
                                         }
                                         @foreach (var item in list_categories)
                                         {
-                                                        <tr>
-                                                            <td>
-                                                                <input type="checkbox" value="@item.Id"
+                                                                <li>
+                                                                    <input type="checkbox" class="checkItemCategory"
+                                                                    @if(Model !=null &&
+                                                                    checkCategoriesProductsRecord(item.Id, Model.Id)){
+                                                                    <text>checked</text>
+                                                                } value="@item.Id"
                                                                 name="category_@item.Id"
-                                                                id="category_@item.Id" />&nbsp;&nbsp; <label
-                                                                for="category_@item.Id">@item.Name</label>
-                                                            </td>
-                                                        </tr>
+                                                                id="category_@item.Id"
+                                                                />&nbsp;&nbsp; <label
+                                                                    for="category_@item.Id">@item.Name</label>
+                                                                </li>
                                         }
-                                            </table>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="hot">Hot</label>
-                                           <input type="checkbox" name="hot" id="hot" @if(Model != null && Model.Hot == 1){
-                                    <text>checked</text>}> 
-                                        </div>
-                                          <div class="mb-3">
-                                            <label class="form-label">Price</label>
-                                             <input type="number" value="@if(Model!=null){
-                                    <text>@Model.Price</text>
-}else{
-                                    <text>0</text>
-}" name="price" class="form-control form-control-lg" required>
+                                                    </ul>
+
+                                                </div>
 
 
-      <div class="mb-3">
-                                            <label class="form-label">Discount</label>
-                                              <input type="number" min="0" max="100" value="@if(Model!=null){
-                                        <text>@Model.Discount</text>
-}else{
+                                                <script language="javascript">
+                                                    $("#checkCategories").click(function () {
+                                                        $(".checkItemCategory").prop('checked', $(this).prop('checked'));
+                                                    });
+                                                </script>
+
+
+                                                <div class="mb-3 ">
+                                                      <label class="form-label select-label">Tags</label>
+                                    @{
+                                        List<ItemTags> list_tags = ListTags();
+                                    }
+                                                        <select name="tags" multiple class="form-select form-select-lg">
+                                        @foreach (var item_tag in list_tags)
+                                        {
+                                                                <option value="@item_tag.Id" @if(Model !=null &&
+                                                                checkTagsProductsRecord(item_tag.Id, Model.Id)){
+                                        <text>selected</text>
+                                                                }>@item_tag.Name</option>
+                                        }
+                                                        </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="hot">Hot</label>
+                                                    <input type="checkbox" name="hot" id="hot" @if(Model !=null &&
+                                                        Model.Hot==1){
+                                    <text>checked</text>
+                                                    }>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Price</label>
+                                                    <input type="number" value="@if(Model!=null){
+                                        <text>@Model.Price</text>
+    }else{
                                         <text>0</text>
-}" name="discount" class="form-control form-control-lg" required>
+    }" name="price" class="form-control form-control-lg" required>
 
-                                           
 
-                                        </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Description</label>
-                                           <textarea name="description" id="description">@if (Model != null)
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Discount</label>
+                                                        <input type="number" min="0" max="100" value="@if(Model!=null){
+                                            <text>@Model.Discount</text>
+    }else{
+                                            <text>0</text>
+    }" name="discount" class="form-control form-control-lg" required>
+
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea name="description" id="description">@if (Model != null)
                                         {
                                             <text>@Model.Description</text>
                                         }</textarea>
-                                         <script language="javascript">
-                            CKEDITOR.replace("description");
-                        </script>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Content</label>
-                                           <textarea name="content" id="content">@if (Model != null)
+                                                    <script language="javascript">
+                                                        CKEDITOR.replace("description");
+                                                    </script>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Content</label>
+                                                    <textarea name="content" id="content">@if (Model != null)
                                         {
                                             <text>@Model.Content</text>
                                         }</textarea>
-                                        <script language="javascript">
-                            CKEDITOR.replace("content");
-                        </script>
+                                                    <script language="javascript">
+                                                        CKEDITOR.replace("content");
+                                                    </script>
 
+                                                </div>
+
+                                                <div class="text-center mt-3">
+
+                                                    <button type="submit" class="btn btn-lg btn-primary">Hoàn
+                                                        Thành</button>
+                                                </div>
+                                            </form>
                                         </div>
-
-                                        <div class="text-center mt-3">
-
-                                            <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
-                                        </div>
-                                    </form>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-        </div>

@@ -10,10 +10,10 @@
             <div class="e-panel card">
                 <div class="card-body">
                     <div class="card-title d-flex align-items-center">
-                        <h4 class="mr-2 col-6">Users</h4>
+                        <h4 class="mr-2 col-6">Tags</h4>
                         <div class="text-center col-6">
-                            <a href="/Admin/Users/Create" class="btn btn-success btn-block w-100" type="button"
-                                data-toggle="modal" data-target="#user-form-modal">New User</a>
+                            <a href="/Admin/Tags/Create" class="btn btn-success btn-block w-100"
+                                >New Tags</a>
                         </div>
                     </div>
 
@@ -25,9 +25,8 @@
                                     <tr>
 
                                         
-                                        <th class="max-width">Fullname</th>
-                                        <th class="sortable">Email</th>
-                                       
+                                        <th class="max-width">Name</th>
+                                        
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -37,14 +36,13 @@
                                         <tr>
 
                                             <td class="text-nowrap align-middle">@item.Name</td>
-                                            <td class="text-nowrap align-middle"><span>@item.Email</span></td>
-                                           
+                                          
                                             <td class="text-center align-middle">
                                                 <div class="btn-group align-top">
-                                                    <a href="/Admin/Users/Update/@item.Id"
+                                                    <a href="/Admin/Tags/Update/@item.Id"
                                                     class="btn btn-sm btn-outline-secondary badge text-dark"
                                                     data-toggle="modal" data-target="#user-form-modal"><i class="align-middle me-2" data-feather="edit-3"></i></a>
-                                                    <a href="/Admin/Users/Delete/@item.Id"
+                                                        <a href="/Admin/Tags/Delete/@item.Id"
                                                     onclick="return window.confirm('Are you sure?');"
                                                     class="btn btn-sm btn-outline-secondary badge text-dark" ><i
                                                         class="fa fa-trash"></i></a>

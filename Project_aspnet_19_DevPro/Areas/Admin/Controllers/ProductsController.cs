@@ -86,6 +86,49 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
                     //cập nhật lại table
                     db.SaveChanges();
                 }
+
+
+
+                List<ItemCategory> list_categories = db.Categories.ToList();
+                //---
+                //xóa các bản ghi trong table CategoriesProducts có id tương ứng với sản phẩm này (trước khi insert dữ liệu mới)
+                List<ItemCategoriesProducts> list_category_product = db.CategoriesProducts.Where(item => item.ProductId == _id).ToList();
+                foreach (var item in list_category_product)
+                {
+                    db.CategoriesProducts.Remove(item);
+                }
+                db.SaveChanges();
+                //---
+                foreach (var itemCategory in list_categories)
+                {
+                    string formName = "category_" + itemCategory.Id;
+                    if (!String.IsNullOrEmpty(Request.Form[formName]))
+                    {
+                        ItemCategoriesProducts recordCategoryProduct = new ItemCategoriesProducts();
+                        recordCategoryProduct.CategoryId = itemCategory.Id;
+                        recordCategoryProduct.ProductId = _id;
+                        //thêm bản ghi vào table
+                        db.CategoriesProducts.Add(recordCategoryProduct);
+                        db.SaveChanges();
+                    }
+                }
+
+                List<ItemTagProducts> list_tags_product = db.TagProducts.Where(item => item.TagProduct == _id).ToList();
+                foreach (var item_tags_products in list_tags_product)
+                {
+                    db.TagProducts.Remove(item_tags_products);
+                }
+
+                List<string> list_id_tags = Request.Form["tags"].ToList();
+                foreach (var item_id_tags in list_id_tags)
+                {
+                    ItemTagProducts record_tags_product = new ItemTagProducts();
+                    record_tags_product.TagId = Convert.ToInt32(item_id_tags);
+                    record_tags_product.TagProduct = _id;
+                    db.TagProducts.Add(record_tags_product);
+                    db.SaveChanges();
+                }
+
             }
             return RedirectToAction("Index");
         }
@@ -140,6 +183,34 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
                 db.SaveChanges();
             }
             //them ban ghi vao table Products
+
+
+            int insert_id = record.Id;
+
+            List<ItemCategory> list_categories = db.Categories.ToList();
+
+            foreach (var itemCategory in list_categories)
+            {
+                string formName = "category_" + itemCategory.Id;
+                if (!String.IsNullOrEmpty(Request.Form[formName]))
+                {
+                    ItemCategoriesProducts recordCategoryProduct = new ItemCategoriesProducts();
+                    recordCategoryProduct.CategoryId = itemCategory.Id;
+                    recordCategoryProduct.ProductId = insert_id;
+                    //thêm bản ghi vào table
+                    db.CategoriesProducts.Add(recordCategoryProduct);
+                    db.SaveChanges();
+                }
+            }
+            List<string> list_id_tags = Request.Form["tags"].ToList();
+            foreach (var item_id_tags in list_id_tags)
+            {
+                ItemTagProducts record_tags_product = new ItemTagProducts();
+                record_tags_product.TagId = Convert.ToInt32(item_id_tags);
+                record_tags_product.TagProduct = insert_id;
+                db.TagProducts.Add(record_tags_product);
+                db.SaveChanges();
+            }
             db.Products.Add(record);
             db.SaveChanges();
             //di chuyển đến action có tên là Index
@@ -153,5 +224,11 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+
+
+
+
+
     }
 }

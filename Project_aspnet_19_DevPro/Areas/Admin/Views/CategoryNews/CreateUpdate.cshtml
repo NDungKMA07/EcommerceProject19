@@ -26,7 +26,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="m-sm-4">
-                            <form class="form" method="post" action="@ViewBag.action">
+                            <form class="form" method="post" action="@ViewBag.action"    enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label class="form-label">Name Blog</label>
                                     <input type="text" value="@if(Model!=null){
@@ -38,7 +38,7 @@
 
                                 <div class="text-center mt-3">
 
-                                    <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
+                                    <button type="submit" class="btn btn-outline-dark">Hoàn Thành</button>
                                 </div>
                             </form>
                         </div>

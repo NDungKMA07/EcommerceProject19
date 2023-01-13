@@ -1,0 +1,97 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
+}
+@* Để phân trang thì using các đối tượng sau *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using Project_aspnet_19_DevPro.Models
+@functions {
+    public MyDbConnect db = new MyDbConnect();
+    public string ListCategoriesNews(int _id)
+    {
+        string str = "";
+        ItemProduct record = db.Products.Where(item => item.Id == _id).FirstOrDefault();
+        str = record.Name;
+        return str;
+    }
+
+}
+<div class="container">
+    <div class="col mb-3">
+        <div class="e-panel card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-center">
+                    <h4 class="mr-2 col-6">Danh sách ảnh sản phẩm: <strong>@ListCategoriesNews(ViewBag.IdProduct)</strong></h4>
+                    <div class="text-center col-6">
+                        <a href="/Admin/ImgSub/Create/@ViewBag.IdProduct" class="btn btn-success btn-block w-100">
+                            New Image Product</a>
+                    </div>
+                </div>
+
+
+                <div class="e-table">
+                    <div class="table-responsive table-lg mt-3">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    
+                                    <th>Photo</th>                 
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td class="align-middle text-center">
+                                            @if (item.Photo != null && File.Exists(Directory.GetCurrentDirectory() +
+                                           "\\wwwroot\\Upload\\ImgProducts\\" + item.Photo))
+                                            {
+                                                <img src="~/Upload/ImgProducts/@item.Photo" style="width:100px;">
+                                            }
+                                            else
+                                            {
+                                                     <div class="bg-light d-inline-flex justify-content-center align-items-center align-top"
+                                                        style="width: 35px; height: 35px; border-radius: 3px;"><i
+                                                            class="fa fa-fw fa-photo" style="opacity: 0.8;"></i></div>
+                                            }
+
+
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="btn-group align-top">
+                                                    <a href="/Admin/ImgSub/Update/@item.Id"
+                                                class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                    class="align-middle me-2" data-feather="edit-3"></i></a>
+                                                        <a href="/Admin/ImgSub/Delete/@item.Id"
+                                                onclick="return window.confirm('Are you sure?');"
+                                                class="btn btn-sm btn-outline-secondary badge text-dark"><i
+                                                    class="fa fa-trash"></i></a>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center">
+
+                        @Html.PagedListPager((IPagedList)Model,p=>Url.Action("Index", new {page = p}))
+
+                    </div>
+                </div>
+                  <div class="text-center mt-3">
+
+                                            <a href="/Admin/Products/Index" class="btn btn-outline-dark w-50">Hoàn Thành</a>
+                                        </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

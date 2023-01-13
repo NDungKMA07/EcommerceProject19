@@ -33,22 +33,33 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th class="text-center ">STT</th>
-                                            
-
+                                          
+                                            <th class="text-center ">Photo</th>
                                             <th class="max-width text-center">Name Category</th>
                                             <th class="text-center ">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @{
-                                    int count = 1;
-                                }
+                                      
                                 @foreach (var item in Model)
                                 {
                                             <tr>
-                                                <td class="text-nowrap align-middle text-center">@count</td>
                                                 
+                                                    <td class="align-middle text-center">
+                                            @if (item.Photo != null && File.Exists(Directory.GetCurrentDirectory() +
+                                          "\\wwwroot\\Upload\\Categories\\" + item.Photo))
+                                            {
+                                                                <img src="~/Upload/Categories/@item.Photo" style="width:100px;">
+                                            }
+                                            else
+                                            {
+                                                             <div class="bg-light d-inline-flex justify-content-center align-items-center align-top"
+                                                        style="width: 35px; height: 35px; border-radius: 3px;"><i
+                                                            class="fa fa-fw fa-photo" style="opacity: 0.8;"></i></div>
+                                            }
+
+
+                                            </td>
 
                                                 <td class="text-nowrap align-middle"><span>@item.Name</span></td>
 
@@ -66,20 +77,33 @@
                                                     </div>
                                                 </td>
                                             </tr>
-
-                                    count += 1;
                                     List<ItemCategory> list_categories_sub = CategoriesSub(item.Id);
                                     foreach (ItemCategory itemSub in list_categories_sub)
                                     {
-
+                                                        <tr>
+                                                                    <td>Danh mục con:  <i class="align-middle me-2" data-feather="arrow-down-right"></i></td>
+                                                                             <td></td>
+                                                                             <td></td>
+                                                        </tr>
                                                     <tr>
-                                                        <td class="align-middle text-center"><i class="align-middle me-2"
-                                                        data-feather="corner-down-right"></i></td>
-                                                        <td class="align-middle text-center">
-                                                            <div class="bg-light d-inline-flex justify-content-center align-items-center align-top"
+
+                                                                 <td class="align-middle text-center">
+                                                                            
+                                                @if (itemSub.Photo != null && File.Exists(Directory.GetCurrentDirectory() +
+                                            "\\wwwroot\\Upload\\Categories\\" + itemSub.Photo))
+                                                {
+                                                                                        <img src="~/Upload/Categories/@itemSub.Photo" style="width:100px;">
+                                                }
+                                                else
+                                                {
+                                                                         <div class="bg-light d-inline-flex justify-content-center align-items-center align-top"
                                                         style="width: 35px; height: 35px; border-radius: 3px;"><i
                                                             class="fa fa-fw fa-photo" style="opacity: 0.8;"></i></div>
-                                                        </td>
+                                                }
+
+
+                                                    </td>
+                                                    
 
                                                         <td class="text-nowrap align-middle"><span>@itemSub.Name</span></td>
                                                         <td class=" text-center align-middle">

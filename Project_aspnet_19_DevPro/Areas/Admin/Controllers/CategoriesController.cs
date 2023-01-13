@@ -26,72 +26,25 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
         //khởi tạo đối tượng thao tác csdl
         public MyDbConnect db = new MyDbConnect();
         //Tạo biến toàn cục để đọc các thông số từ file appsettings.json
-        public IConfiguration configuration;
-        //hàm tạo là hàm mặc định được triệu gọi khi class được khởi tạo
-        public CategoriesController(IConfiguration _configuration)
-        {
-            //sử dụng dòng sau để gán giá trị vào biến toàn cục
-            configuration = _configuration;//từ đây có thể đọc được các tham số của file appsettings.json từ đây
-        }
+
         public IActionResult Index(int? page)
-        {
-            //tạo đối tượng DataTable
-            DataTable dtCategories = new DataTable();
-            //lấy chuỗi kết nối -> chuỗi này nằm trong file appsettings.json
-            string strDbConnectString = configuration.GetConnectionString("DbConnectString").ToString();
-            //từ khóa using để thực hiện lệnh bên trong khối using đó, khi kết thúc thì khối lệnh bên trong sẽ bị hủy đi
-            using (SqlConnection conn = new SqlConnection(strDbConnectString))
-            {
-                //thực hiện truy vấn, trả kết quả về biến object
-                SqlDataAdapter da = new SqlDataAdapter("select * from categories where ParentId = 0 order by Id desc", conn);
-                //đổ dữ liệu vào DataTable có tên là dtCategories
-                da.Fill(dtCategories);
-            }
-            //---
+        {//lấy trang hiện tại
             int current_page = page ?? 1;
             //định nghĩa số bản ghi trên một trang
-            int record_per_page = 4;
-            //đổ dữ liệu từ biến DataTable có tên là dtCategories vào List để có thể phân trang
-            //tạo List có tên listCategories
-            List<ItemCategory> listCategories = new List<ItemCategory>();
-            foreach (DataRow item in dtCategories.Rows)
-            {
-                listCategories.Add(new ItemCategory() { Id = Convert.ToInt32(item["Id"].ToString()), Name = item["Name"].ToString(), ParentId = Convert.ToInt32(item["ParentId"].ToString()) });
-            }
-            //---
+            int record_per_page = 5;
+            //lấy tất cả các bản ghi trong table Users
+            List<ItemCategory> list_record = db.Categories.Where(item => item.ParentId == 0).OrderByDescending(item => item.Id).ToList();
             //truyền giá trị ra view có phân trang
-            return View("Index", listCategories.ToPagedList(current_page, record_per_page));
+            return View("Index", list_record.ToPagedList(current_page, record_per_page));
         }
         //url: /Admin/Categories/Update/id
         public IActionResult Update(int? id)
         {
             int _id = id ?? 0;
-            //tao doi tuong DataTable
-            DataTable dtCategories = new DataTable();
-            //lay chuoi ket noi -> chuoi nay nam trong file appsettings.json
-            string strDbConnectString = configuration.GetConnectionString("DbConnectString").ToString();
-            using (SqlConnection conn = new SqlConnection(strDbConnectString))
-            {
-                //thực hiện truy vấn, trả kết quả về biến object
-                SqlDataAdapter da = new SqlDataAdapter("select * from categories where Id = " + _id, conn);
-                //đổ dữ liệu vào DataTable có tên là dtCategories
-                da.Fill(dtCategories);
-            }
-            //khởi tạo một item (tương ứng với 1 row trang table) của DataTable dtCategories
-            DataRow itemCategory = dtCategories.NewRow();
-            if (dtCategories.Rows.Count > 0)
-                itemCategory = dtCategories.Rows[0];
-            //---
-            //liệt kê danh mục để truyền ra view
-            int _CurrentId = 0;
-            if (itemCategory != null)
-                _CurrentId = Convert.ToInt32(itemCategory["Id"]);
-            ViewBag.listCategory = db.Categories.Where(item => item.ParentId == 0 && item.Id != _CurrentId).OrderByDescending(item => item.Id).ToList();
-            //---
-            //tạo biến action để đưa vào thuộc tính action của thẻ form
+            ItemCategory record = db.Categories.Where(anhxa => anhxa.Id == _id).FirstOrDefault();
             ViewBag.action = "/Admin/Categories/UpdatePost/" + _id;
-            //truyền 1 DataRow <=> 1 hàng trong DataTable ra view
-            return View("CreateUpdate", itemCategory);
+            return View("CreateUpdate", record);
+          
         }
         //khi ấn nút submit thì trang sẽ ở trạng thái POST
         //url: /Admin/Categories/UpdatePost/Id
@@ -102,20 +55,39 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
             int _id = id ?? 0;
             string _name = fc["name"].ToString().Trim();
             string _parent_id = fc["parent_id"].ToString().Trim();
-            //lay chuoi ket noi -> chuoi nay nam trong file appsettings.json
-            string strDbConnectString = configuration.GetConnectionString("DbConnectString").ToString();
-            using (SqlConnection conn = new SqlConnection(strDbConnectString))
+            ItemCategory record = db.Categories.Where(item => item.Id == _id).FirstOrDefault();
+            string _fileName = "";
+           if (record != null)
             {
-                //update, delete, insert thì phải open đối tượng kết nối
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("update Categories set Name=@var_name,ParentId=@var_parent_id where Id=@var_id", conn);
-                cmd.Parameters.AddWithValue("@var_name", _name);
-                cmd.Parameters.AddWithValue("@var_parent_id", _parent_id);
-                cmd.Parameters.AddWithValue("@var_id", _id);
-                //thực thi truy cấn
-                cmd.ExecuteNonQuery();
+                record.Name = _name;
+                record.ParentId = Int32.Parse(_parent_id);
+                try
+                {
+                    _fileName = Request.Form.Files[0].FileName;
+                }
+                catch
+                {
+                    ;
+                }
+                if (!string.IsNullOrEmpty(_fileName))
+                {
+                    //upload anh moi
+                    var timestamp = DateTime.Now.ToFileTime();
+                    _fileName = timestamp + "_" + _fileName;
+                    //lay duong dan cua file
+                    string _Path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Upload/Categories", _fileName);
+                    //upload file
+                    using (var stream = new FileStream(_Path, FileMode.Create))
+                    {
+                        Request.Form.Files[0].CopyTo(stream);
+                    }
+                    //update gia tri vao cot Photo trong csdl
+                    record.Photo = _fileName;
+                    //cập nhật lại table
+                    db.SaveChanges();
+                }
             }
-            //di chuyển đến một url khác
+            db.SaveChanges();   
             return Redirect("/Admin/Categories");
         }
         //url: /Admin/Categories/Create
@@ -133,36 +105,49 @@ namespace Project_aspnet_19_DevPro.Areas.Admin.Controllers
         {
             string _name = fc["name"].ToString().Trim();
             string _parent_id = fc["parent_id"].ToString().Trim();
-            //lay chuoi ket noi -> chuoi nay nam trong file appsettings.json
-            string strDbConnectString = configuration.GetConnectionString("DbConnectString").ToString();
-            using (SqlConnection conn = new SqlConnection(strDbConnectString))
+           ItemCategory record = new ItemCategory();
+            record.Name = _name;    
+            record.ParentId = Int32.Parse(_parent_id);
+            string _fileName = "";
+            try
             {
-                //update, delete, insert thì phải open đối tượng kết nối
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("insert into Categories(Name, ParentId) values (@var_name,@var_parent_id)", conn);
-                cmd.Parameters.AddWithValue("@var_name", _name);
-                cmd.Parameters.AddWithValue("@var_parent_id", _parent_id);
-                //thực thi truy cấn
-                cmd.ExecuteNonQuery();
+                _fileName = Request.Form.Files[0].FileName;
             }
+            catch
+            {
+                ;
+            }
+            if (!string.IsNullOrEmpty(_fileName))
+            {
+                //upload anh moi
+                var timestamp = DateTime.Now.ToFileTime();
+                _fileName = timestamp + "_" + _fileName;
+                //lay duong dan cua file
+                string _Path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Upload/Categories", _fileName);
+                //upload file
+                using (var stream = new FileStream(_Path, FileMode.Create))
+                {
+                    Request.Form.Files[0].CopyTo(stream);
+                }
+                //update gia tri vao cot Photo trong csdl
+                record.Photo = _fileName;
+                //cập nhật lại table
+                db.SaveChanges();
+            }
+            db.Categories.Add(record);  
+            db.SaveChanges();   
             //di chuyển đến một url khác
             return Redirect("/Admin/Categories");
         }
         public IActionResult Delete(int? id)
         {
             int _id = id ?? 0;
-            //lay chuoi ket noi -> chuoi nay nam trong file appsettings.json
-            string strDbConnectString = configuration.GetConnectionString("DbConnectString").ToString();
-            using (SqlConnection conn = new SqlConnection(strDbConnectString))
-            {
-                //update, delete, insert thì phải open đối tượng kết nối
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("delete from Categories where Id=@var_id or ParentId=@var_id", conn);
-                cmd.Parameters.AddWithValue("@var_id", _id);
-                //thực thi truy cấn
-                cmd.ExecuteNonQuery();
+            ItemCategory record = db.Categories.Where(item => item.Id == _id).FirstOrDefault();
+            if (record != null) {
+                db.Categories.Remove(record);
+
             }
-            //di chuyển đến một url khác
+            db.SaveChanges();   
             return Redirect("/Admin/Categories");
         }
     }

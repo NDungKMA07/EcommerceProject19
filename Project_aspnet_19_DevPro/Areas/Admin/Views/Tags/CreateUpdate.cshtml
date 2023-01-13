@@ -2,6 +2,8 @@
     //load file Layout.cshtml vao day
     Layout = "~/Areas/Admin/Views/Shared/_layout.cshtml";
 }
+
+
 <div class="container">
     <div class="row ">
         <div class="col-12 d-table">
@@ -10,7 +12,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="m-sm-4">
-                            <form class="form" method="post" action="@ViewBag.action"  enctype="multipart/form-data">
+                            <form class="form" method="post" action="@ViewBag.action">
                                 <div class="mb-3">
                                     <label class="form-label">Name</label>
                                     <input type="text" value="@if(Model!=null){
@@ -18,20 +20,11 @@
 }" name="name" placeholder="Name ..." class="form-control form-control-lg" required>
 
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Positon</label>
-                                    <input placeholder="Position" value="@if(Model!=null){
-                                    <text>@Model.Position</text>
-}" name="position"  class="form-control form-control-lg" required>
-                                </div>
-                                 <div class="mb-3">
-                                    <label class="form-label">Photo</label>
-                                    <input type="file" name="photo"  class="form-control form-control-lg" >
-                                </div>
+                               
 
                                 <div class="text-center mt-3">
 
-                                    <button type="submit" class="btn btn-outline-dark">Hoàn Thành</button>
+                                    <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
                                 </div>
                             </form>
                         </div>

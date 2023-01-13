@@ -22,6 +22,8 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="wwwroot\Upload\Advs\" />
+    <Folder Include="wwwroot\Upload\ImgProducts\" />
+    <Folder Include="wwwroot\Upload\Categories\" />
     <Folder Include="wwwroot\Upload\News\" />
     <Folder Include="wwwroot\Upload\Sliders\" />
   </ItemGroup>

@@ -18,7 +18,7 @@
 <h1 class="h3 mb-3"><strong>
         @if (Model != null)
         {
-            <span> Cập nhập danh mục: @Model["Name"]</span>
+                <span> Cập nhập danh mục: @Model.Name</span>
         }
         else
         {
@@ -33,11 +33,15 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="m-sm-4">
-                            <form class="form" method="post" action="@ViewBag.action">
+                            <form class="form" method="post" action="@ViewBag.action"   enctype="multipart/form-data">
+                                 <div class="mb-3">
+                                            <label class="form-label">Photo</label>
+                                            <input type="file" name="photo" class="form-control form-control-lg">
+                                        </div>
                                 <div class="mb-3">
                                     <label class="form-label">Name Category</label>
                                     <input type="text" value="@if(Model!=null){
-                                    <text>@Model["Name"]</text>
+                                    <text>@Model.Name</text>
 }"
                                     name="name" class="form-control form-control-lg" required>
 
@@ -45,17 +49,18 @@
 
                                 <div class="mb-3">
                                     <label class="form-label select-label">Danh mục</label>
-                                    <select class="form-select form-select-lg">
+                                    <select class="form-select form-select-lg" name="parent_id">
+                                          <option value="0"></option>
                                         @{
                                             int _CurrentId = 0;
                                             if (Model != null)
-                                                _CurrentId = Convert.ToInt32(Model["Id"]);
+                                                _CurrentId = Convert.ToInt32(Model.Id);
                                             List<ItemCategory> list_categories = Categories(_CurrentId);
                                         }
                                         @foreach (ItemCategory item in list_categories)
                                         {
                                                 <option @if(Model !=null &&
-                                                Convert.ToInt32(Model["ParentId"])==item.Id){
+                                                Convert.ToInt32(Model.ParentId)==item.Id){
                                         <text>selected</text>
 }
                                                 value="@item.Id">@item.Name</option>
@@ -68,7 +73,7 @@
 
                                 <div class="text-center mt-3">
 
-                                    <button type="submit" class="btn btn-lg btn-primary">Hoàn Thành</button>
+                                    <button type="submit" class="btn btn-outline-dark">Hoàn Thành</button>
                                 </div>
                             </form>
                         </div>

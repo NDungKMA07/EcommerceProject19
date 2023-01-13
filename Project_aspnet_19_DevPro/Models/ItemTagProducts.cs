@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project_aspnet_19_DevPro.Models
 {
-    [Table("Categories")]
-    public class ItemCategory
+    [Table("TagProducts")]
+    public class ItemTagProducts
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int ParentId { get; set; }
-        public string? Photo { get; set; }
+        public int TagId { get; set; }
+        public int TagProduct { get; set; }
     }
 }
